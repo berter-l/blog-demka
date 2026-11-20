@@ -3,11 +3,21 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Вход</title>
+<meta name="description" content="Демонстрационный блог: публикации, комментарии и проекты.">
+<title>blog. — Вход</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.9/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-yEPZ7jP9S0QKiUQ0m3jjsO4ProIW7wvR9gXkI7JOGa2XVsw53Yke2bsdkBbjmmiX"
+      crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.9/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-WyOxWvTyr1QaMPfiPJSv76iReVthorl5uWlFtZPyK0IEB0hGzo9y5Bp9mYanr8Bu"
+        crossorigin="anonymous" defer></script>
+<script src="script.js" defer></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#f7f7f8;min-height:100vh;display:flex;justify-content:center;align-items:center;padding:24px}
-.container{background:#fff;padding:48px 56px;width:100%;max-width:400px;border-radius:8px;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#f7f7f8;min-height:100vh;display:flex;justify-content:center;align-items:flex-start;padding:32px 24px;color:#1a1a1a}
+.page-layout{width:100%;max-width:960px;display:grid;gap:22px}
+.container{background:#fff;padding:48px 56px;width:100%;max-width:400px;border-radius:8px;box-shadow:0 1px 4px rgba(0,0,0,.06);justify-self:center}
 .logo{text-align:center;font-size:32px;margin-bottom:4px}
 h1{text-align:center;font-size:22px;font-weight:600;color:#1a1a1a;margin-bottom:28px;letter-spacing:-.3px}
 .status{text-align:center;font-size:13px;color:#757575;padding:8px 0;margin-bottom:20px;border-top:1px solid #eaeaea;border-bottom:1px solid #eaeaea}
@@ -31,127 +41,127 @@ input:focus{outline:none;border-color:#1a1a1a;background:#fff}
 .message.info{display:block;background:#f0f0f0;color:#555;border-left:3px solid #999}
 .loading{display:inline-block;width:18px;height:18px;border:2px solid #fff;border-radius:50%;border-top-color:transparent;animation:spin .6s linear infinite;margin-right:8px;vertical-align:middle}
 @keyframes spin{to{transform:rotate(360deg)}}
-@media (max-width:480px){.container{padding:32px 24px}h1{font-size:20px}}
+.demo-note{font-size:12px;color:#888;line-height:1.5;text-align:center;margin-top:16px}
+.content-card{background:#fff;padding:28px 32px;border-radius:8px;box-shadow:0 1px 4px rgba(0,0,0,.04)}
+.content-card h2{font-size:20px;font-weight:600;margin:0 0 12px;color:#1a1a1a}
+.content-card p{font-size:14px;line-height:1.7;color:#666;margin:0}
+.details-toggle{margin-top:16px;padding:9px 16px;border:1px solid #d0d0d0;border-radius:4px;background:#fff;color:#333;font-size:14px;cursor:pointer}
+.details-toggle:hover{border-color:#1a1a1a;background:#fafafa}
+.more-text{padding-top:12px}
+.projects-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px;margin-top:18px}
+.project-card{border:1px solid #ececec;border-radius:6px;padding:18px;background:#fcfcfc}
+.project-card h3{font-size:15px;font-weight:600;margin:0 0 8px;color:#222}
+.project-card p{font-size:13px;line-height:1.6;color:#666;margin:0}
+.project-tag{display:inline-block;margin-top:12px;padding:4px 8px;border-radius:12px;background:#f0f0f0;color:#666;font-size:11px}
+.contact-form{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:16px}
+.contact-form .form-group{margin:0}
+.contact-form .full{grid-column:1/-1}
+.contact-form input,.contact-form textarea{width:100%;padding:11px 13px;border:1px solid #d0d0d0;border-radius:4px;font:inherit;font-size:14px;background:#fafafa}
+.contact-form textarea{min-height:110px;resize:vertical}
+.contact-form input:focus,.contact-form textarea:focus{outline:none;border-color:#1a1a1a;background:#fff}
+.contact-submit{justify-self:start;padding:11px 18px;background:#1a1a1a;color:#fff;border:0;border-radius:4px;font-size:14px;cursor:pointer}
+.contact-submit:hover{background:#000}
+.contact-message{display:none;margin-top:14px;padding:11px 14px;border-radius:4px;font-size:13px;line-height:1.5}
+.contact-message.success{display:block;background:#e8f5e9;color:#2e7d32}
+.contact-message.error{display:block;background:#fbe9e7;color:#c62828}
+@media (max-width:600px){
+ body{padding:18px 12px}
+ .container{padding:32px 24px}
+ h1{font-size:20px}
+ .content-card{padding:22px 18px}
+ .contact-form{grid-template-columns:1fr}
+ .contact-form .full{grid-column:auto}
+}
 </style>
 </head>
-<body>
-<div class="container">
-  <div class="logo">◆</div>
-  <h1>Вход</h1>
-  <div id="authStatus" class="status">● не авторизован</div>
-  <div class="tabs" id="tabsContainer">
-    <button class="active" onclick="switchTab('login')">Вход</button>
-    <button onclick="switchTab('register')">Регистрация</button>
-  </div>
-  <div id="loginForm" class="form active">
-    <form onsubmit="handleLogin(event)">
-      <div class="form-group"><label>Email</label><input type="email" id="loginEmail" placeholder="email@example.com"></div>
-      <div class="form-group"><label>Пароль</label><input type="password" id="loginPassword" placeholder="••••••••"></div>
-      <button type="submit" class="btn-submit" id="loginBtn">Войти</button>
-    </form>
-  </div>
-  <div id="registerForm" class="form">
-    <form onsubmit="handleRegister(event)">
-      <div class="form-group"><label>Имя пользователя</label><input type="text" id="regUsername" placeholder="username"></div>
-      <div class="form-group"><label>Email</label><input type="email" id="regEmail" placeholder="email@example.com"></div>
-      <div class="form-group"><label>Пароль</label><input type="password" id="regPassword" placeholder="••••••••"></div>
-      <div class="form-group"><label>Подтверждение</label><input type="password" id="regConfirmPassword" placeholder="••••••••"></div>
-      <button type="submit" class="btn-submit" id="registerBtn">Создать аккаунт</button>
-    </form>
-  </div>
-  <div id="message" class="message"></div>
-</div>
-<script>
-const STORAGE_KEYS = { ACCESS_TOKEN:'access_token', REFRESH_TOKEN:'refresh_token', USER_EMAIL:'user_email' };
+<body data-page="login">
+<main class="page-layout">
+  <section class="container" aria-labelledby="loginTitle">
+    <div class="logo" aria-hidden="true">◆</div>
+    <h1 id="loginTitle">Вход</h1>
+    <div id="authStatus" class="status" role="status" aria-live="polite">● не авторизован</div>
 
-function saveSession(email){
-  localStorage.setItem(STORAGE_KEYS.ACCESS_TOKEN, 'mock-token-' + Date.now());
-  localStorage.setItem(STORAGE_KEYS.REFRESH_TOKEN, 'mock-refresh-' + Date.now());
-  localStorage.setItem(STORAGE_KEYS.USER_EMAIL, email);
-  window.location.href = 'posts.html';
-}
-function isAuthenticated(){ return !!localStorage.getItem(STORAGE_KEYS.ACCESS_TOKEN); }
-function updateUI(){
-  const status=document.getElementById('authStatus');
-  const tabs=document.getElementById('tabsContainer');
-  const loginForm=document.getElementById('loginForm');
-  const registerForm=document.getElementById('registerForm');
-  if(isAuthenticated()){
-    status.className='status logged-in';
-    status.textContent='● уже авторизован';
-    tabs.style.display='none';
-    loginForm.classList.remove('active');
-    registerForm.classList.remove('active');
-    setTimeout(()=>{ window.location.href='posts.html'; },1000);
-  } else {
-    status.className='status';
-    status.textContent='● не авторизован';
-    tabs.style.display='flex';
-    loginForm.classList.add('active');
-    registerForm.classList.remove('active');
-    document.querySelectorAll('.tabs button').forEach(b=>b.classList.remove('active'));
-    document.querySelector('.tabs button:first-child').classList.add('active');
-  }
-}
-function switchTab(tab){
-  if(isAuthenticated()) return;
-  const loginForm=document.getElementById('loginForm');
-  const registerForm=document.getElementById('registerForm');
-  const tabs=document.querySelectorAll('.tabs button');
-  if(tab==='login'){
-    loginForm.classList.add('active'); registerForm.classList.remove('active');
-    tabs[0].classList.add('active'); tabs[1].classList.remove('active');
-  } else {
-    registerForm.classList.add('active'); loginForm.classList.remove('active');
-    tabs[1].classList.add('active'); tabs[0].classList.remove('active');
-  }
-  hideMessage();
-}
-function showMessage(text,type='info'){
-  const msg=document.getElementById('message');
-  msg.textContent=text; msg.className=`message ${type}`;
-  clearTimeout(window.messageTimeout);
-  window.messageTimeout=setTimeout(hideMessage,5000);
-}
-function hideMessage(){ const msg=document.getElementById('message'); msg.className='message'; msg.textContent=''; }
-function setLoading(id,loading){
-  const btn=document.getElementById(id);
-  if(loading){ btn.disabled=true; btn.innerHTML='<span class="loading"></span> Загрузка...'; }
-  else { btn.disabled=false; btn.textContent= id==='loginBtn'?'Войти':'Создать аккаунт'; }
-}
-function handleLogin(e){
-  e.preventDefault();
-  if(isAuthenticated()) return;
-  hideMessage();
-  const email=document.getElementById('loginEmail').value.trim();
-  const password=document.getElementById('loginPassword').value;
-  if(!email||!password){ showMessage('Заполните все поля','error'); return; }
-  setLoading('loginBtn',true);
-  setTimeout(()=>{
-    if(password.length<4){ showMessage('Пароль слишком короткий (демо: минимум 4 символа)','error'); setLoading('loginBtn',false); return; }
-    saveSession(email);
-  },400);
-}
-function handleRegister(e){
-  e.preventDefault();
-  if(isAuthenticated()) return;
-  hideMessage();
-  const username=document.getElementById('regUsername').value.trim();
-  const email=document.getElementById('regEmail').value.trim();
-  const password=document.getElementById('regPassword').value;
-  const confirm=document.getElementById('regConfirmPassword').value;
-  if(!username||!email||!password||!confirm){ showMessage('Заполните все поля','error'); return; }
-  if(password!==confirm){ showMessage('Пароли не совпадают','error'); return; }
-  setLoading('registerBtn',true);
-  setTimeout(()=>{
-    showMessage('✅ Аккаунт создан! Вход...','success');
-    setTimeout(()=>saveSession(email),800);
-  },400);
-}
-document.addEventListener('DOMContentLoaded',()=>{
-  if(isAuthenticated()){ window.location.href='posts.html'; return; }
-  updateUI();
-});
-</script>
+    <div class="tabs" id="tabsContainer" role="tablist" aria-label="Авторизация">
+      <button type="button" class="active" data-auth-tab="login" role="tab" aria-selected="true">Вход</button>
+      <button type="button" data-auth-tab="register" role="tab" aria-selected="false">Регистрация</button>
+    </div>
+
+    <div id="loginForm" class="form active">
+      <form id="loginFormElement">
+        <div class="form-group">
+          <label for="loginEmail">Email</label>
+          <input type="email" id="loginEmail" placeholder="email@example.com" autocomplete="email" required>
+        </div>
+        <div class="form-group">
+          <label for="loginPassword">Пароль</label>
+          <input type="password" id="loginPassword" placeholder="••••••••" autocomplete="current-password" minlength="4" required>
+        </div>
+        <button type="submit" class="btn-submit" id="loginBtn">Войти</button>
+      </form>
+    </div>
+
+    <div id="registerForm" class="form">
+      <form id="registerFormElement">
+        <div class="form-group">
+          <label for="regUsername">Имя пользователя</label>
+          <input type="text" id="regUsername" placeholder="username" autocomplete="username" minlength="2" maxlength="40" required>
+        </div>
+        <div class="form-group">
+          <label for="regEmail">Email</label>
+          <input type="email" id="regEmail" placeholder="email@example.com" autocomplete="email" required>
+        </div>
+        <div class="form-group">
+          <label for="regPassword">Пароль</label>
+          <input type="password" id="regPassword" placeholder="••••••••" autocomplete="new-password" minlength="4" required>
+        </div>
+        <div class="form-group">
+          <label for="regConfirmPassword">Подтверждение пароля</label>
+          <input type="password" id="regConfirmPassword" placeholder="••••••••" autocomplete="new-password" minlength="4" required>
+        </div>
+        <button type="submit" class="btn-submit" id="registerBtn">Создать аккаунт</button>
+      </form>
+    </div>
+
+    <div id="message" class="message" role="status" aria-live="polite"></div>
+    <p class="demo-note">Демонстрационный режим: данные авторизации хранятся только в этом браузере. Серверной проверки пароля нет.</p>
+  </section>
+
+  <section class="content-card" aria-labelledby="aboutTitle">
+    <h2 id="aboutTitle">Добро пожаловать в blog.</h2>
+    <p>Небольшой демонстрационный блог: создавайте публикации, читайте записи и оставляйте комментарии.</p>
+    <button id="showMore" class="details-toggle" type="button" data-bs-toggle="collapse"
+            data-bs-target="#moreText" aria-expanded="false" aria-controls="moreText">Подробнее</button>
+    <div class="collapse more-text" id="moreText">
+      <p>Проект работает как статический сайт. Публикации, комментарии и демонстрационная сессия сохраняются в localStorage вашего браузера. Для общей базы пользователей и публикаций потребуется отдельный backend.</p>
+    </div>
+  </section>
+
+  <section class="content-card" id="projects" aria-labelledby="projectsTitle">
+    <h2 id="projectsTitle">Возможности проекта</h2>
+    <p>Карточки ниже формируются JavaScript из массива данных.</p>
+    <div class="projects-grid" id="projectsList" aria-live="polite"></div>
+  </section>
+
+  <section class="content-card" aria-labelledby="contactTitle">
+    <h2 id="contactTitle">Обратная связь</h2>
+    <p>Демонстрационная форма проверяет заполнение полей без перезагрузки страницы. Данные никуда не отправляются.</p>
+    <form id="contactForm" class="contact-form" novalidate>
+      <div class="form-group">
+        <label for="contactName">Имя</label>
+        <input id="contactName" name="name" type="text" minlength="2" maxlength="60" autocomplete="name" required>
+      </div>
+      <div class="form-group">
+        <label for="contactEmail">Email</label>
+        <input id="contactEmail" name="email" type="email" autocomplete="email" required>
+      </div>
+      <div class="form-group full">
+        <label for="contactMessageText">Сообщение</label>
+        <textarea id="contactMessageText" name="message" minlength="10" maxlength="1000" required></textarea>
+      </div>
+      <button class="contact-submit" type="submit">Проверить форму</button>
+    </form>
+    <div id="contactMessage" class="contact-message" role="status" aria-live="polite"></div>
+  </section>
+</main>
 </body>
 </html>

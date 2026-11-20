@@ -3,7 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Посты</title>
+<title>blog. — Посты</title>
+<meta name="description" content="Список публикаций демонстрационного блога.">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#f7f7f8;min-height:100vh;padding:32px 24px;color:#1a1a1a}
@@ -53,7 +54,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 @media (max-width:640px){body{padding:16px 12px}.header{flex-wrap:wrap;gap:12px}.post-card{padding:16px 20px}.post-title{font-size:16px}.modal{padding:24px 20px}}
 </style>
 </head>
-<body>
+<body data-page="posts">
 <div class="container">
   <header class="header">
     <div class="header-left"><a href="posts.html" class="logo">blog<span>.</span></a></div>
@@ -63,124 +64,26 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
       <button class="btn btn-danger" id="logoutBtn">Выйти</button>
     </div>
   </header>
-  <div id="message" class="message"></div>
+  <div id="message" class="message" role="status" aria-live="polite"></div>
   <div id="postsContainer">
     <div class="loading-state" id="loadingState"><div class="spinner"></div><div>Загрузка постов...</div></div>
     <div class="posts-list hidden" id="postsList"></div>
     <div class="empty-state hidden" id="emptyState"><div class="icon">📭</div><h3>Нет постов</h3><p>Создайте первый пост</p></div>
   </div>
 </div>
-<div class="modal-overlay" id="createModal">
+<div class="modal-overlay" id="createModal" role="dialog" aria-modal="true" aria-labelledby="createModalTitle" aria-hidden="true">
   <div class="modal">
-    <h2>✏️ Создать пост</h2>
-    <form id="createPostForm">
-      <div class="form-group"><label for="postTitle">Заголовок</label><input type="text" id="postTitle" placeholder="Введите заголовок"></div>
-      <div class="form-group"><label for="postContent">Содержание</label><textarea id="postContent" placeholder="Введите содержание"></textarea></div>
+    <h2 id="createModalTitle">✏️ Создать пост</h2>
+    <form id="createPostForm" novalidate>
+      <div class="form-group"><label for="postTitle">Заголовок</label><input type="text" id="postTitle" placeholder="Введите заголовок" maxlength="120" required></div>
+      <div class="form-group"><label for="postContent">Содержание</label><textarea id="postContent" placeholder="Введите содержание" minlength="1" maxlength="10000" required></textarea></div>
       <div class="modal-actions">
-        <button type="button" class="btn" onclick="closeModal()">Отмена</button>
+        <button type="button" class="btn" id="cancelPostBtn">Отмена</button>
         <button type="submit" class="btn btn-primary">Опубликовать</button>
       </div>
     </form>
   </div>
 </div>
-<script>
-const STORAGE_KEYS={ACCESS_TOKEN:'access_token',REFRESH_TOKEN:'refresh_token',USER_EMAIL:'user_email'};
-const POSTS_KEY='mock_posts';
-
-function isAuthenticated(){ return !!localStorage.getItem(STORAGE_KEYS.ACCESS_TOKEN); }
-function clearTokens(){ Object.values(STORAGE_KEYS).forEach(k=>localStorage.removeItem(k)); }
-
-function getPosts(){
-  try { return JSON.parse(localStorage.getItem(POSTS_KEY)) || []; } catch { return []; }
-}
-function setPosts(posts){ localStorage.setItem(POSTS_KEY, JSON.stringify(posts)); }
-
-function seedPosts(){
-  if(localStorage.getItem(POSTS_KEY)) return;
-  const now=Date.now();
-  const seeded=[
-    {id:1,title:'Добро пожаловать в блог',content:'Это демо-пост без бэкенда. Все данные хранятся в localStorage вашего браузера.\n\nПопробуйте создать свой пост, оставить комментарий или получить выжимку — всё работает на клиенте.',author:'admin',created_at:new Date(now-86400000*3).toISOString(),comments:[{author:'guest',comment_content:'Отличный старт!',created_at:new Date(now-86400000*2).toISOString()}]},
-    {id:2,title:'Как работает статический блог',content:'Страницы posts.html и post.html читают данные из localStorage.\n\nМаршрутизация поста — через параметр ?post=<id>. Это позволяет хостить проект на GitHub Pages без серверных роутов.',author:'admin',created_at:new Date(now-86400000).toISOString(),comments:[]}
-  ];
-  setPosts(seeded);
-}
-
-function updateUI(){
-  const email=localStorage.getItem(STORAGE_KEYS.USER_EMAIL);
-  document.getElementById('userEmail').textContent=isAuthenticated()?(email||'Пользователь'):'Гость';
-}
-function showMessage(text,type='info'){
-  const msg=document.getElementById('message');
-  msg.textContent=text; msg.className=`message ${type}`;
-  clearTimeout(window.messageTimeout);
-  window.messageTimeout=setTimeout(()=>{msg.className='message';msg.textContent='';},5000);
-}
-function escapeHtml(text){
-  if(!text) return '';
-  const div=document.createElement('div'); div.textContent=text; return div.innerHTML;
-}
-
-function renderPosts(){
-  const list=document.getElementById('postsList');
-  const loading=document.getElementById('loadingState');
-  const empty=document.getElementById('emptyState');
-  const posts=getPosts().slice().sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));
-  if(!posts.length){
-    list.classList.add('hidden'); loading.classList.add('hidden'); empty.classList.remove('hidden'); return;
-  }
-  list.innerHTML=posts.map(p=>`
-    <div class="post-card" onclick="openPost(${p.id})">
-      <div class="post-title">${escapeHtml(p.title)}</div>
-      <div class="post-author"><strong>${escapeHtml(p.author||'Автор')}</strong></div>
-      <div class="post-meta"><span>📅 ${new Date(p.created_at).toLocaleDateString('ru-RU')}</span><span>💬 ${(p.comments||[]).length}</span></div>
-    </div>`).join('');
-  list.classList.remove('hidden'); loading.classList.add('hidden'); empty.classList.add('hidden');
-}
-
-function openPost(id){ window.location.href='post.html?post='+id; }
-
-function openModal(){
-  if(!isAuthenticated()){ showMessage('Войдите, чтобы создать пост','error'); return; }
-  document.getElementById('createModal').classList.add('active');
-  document.getElementById('postTitle').value='';
-  document.getElementById('postContent').value='';
-}
-function closeModal(){ document.getElementById('createModal').classList.remove('active'); }
-
-document.getElementById('createPostBtn').addEventListener('click',openModal);
-document.getElementById('logoutBtn').addEventListener('click',()=>{
-  if(confirm('Выйти?')){
-    clearTokens();
-    window.location.href='index.html';
-  }
-});
-document.getElementById('createPostForm').addEventListener('submit',(e)=>{
-  e.preventDefault();
-  const title=document.getElementById('postTitle').value.trim();
-  const content=document.getElementById('postContent').value.trim();
-  if(!title||!content){ showMessage('Заполните все поля','error'); return; }
-  const posts=getPosts();
-  const nextId=posts.reduce((m,p)=>Math.max(m,p.id),0)+1;
-  posts.push({
-    id:nextId,title,content,
-    author:localStorage.getItem(STORAGE_KEYS.USER_EMAIL)||'user',
-    created_at:new Date().toISOString(),
-    comments:[]
-  });
-  setPosts(posts);
-  showMessage('✅ Пост создан!','success');
-  closeModal();
-  renderPosts();
-});
-document.getElementById('createModal').addEventListener('click',(e)=>{ if(e.target===e.currentTarget) closeModal(); });
-document.addEventListener('keydown',(e)=>{ if(e.key==='Escape') closeModal(); });
-
-document.addEventListener('DOMContentLoaded',()=>{
-  if(!isAuthenticated()){ window.location.href='index.html'; return; }
-  updateUI();
-  seedPosts();
-  setTimeout(renderPosts,300);
-});
-</script>
+<script src="script.js" defer></script>
 </body>
 </html>
